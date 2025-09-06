@@ -1,0 +1,34 @@
+name: Run Command on Mac Self-Hosted Runner
+
+on:
+  workflow_dispatch:
+    inputs:
+      command:
+        description: 'Command to execute on the self-hosted runner'
+        required: true
+        default: 'echo Hello, World!'
+
+jobs:
+  run-command:
+    runs-on: [self-hosted,Mac-CI4]  # 关键：使用自托管运行器
+
+    steps:
+      - name: 🔧 Run User-Specified Command
+        id: run_cmd
+        run: |
+          echo "🔹 Running command: ${{ github.event.inputs.command }}"
+          OUTPUT=$(${{ github.event.inputs.command }} 2>&1)
+          echo "✅ Command executed successfully."
+          echo "📋 Output:"
+          echo "$OUTPUT"
+          echo "OUTPUT<<EOF" >> $GITHUB_ENV
+          echo "$OUTPUT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+      - name: 📤 Show Output in Summary
+        run: |
+          echo "### Command: \`\`\`${{ github.event.inputs.command }}\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "#### Output:" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+          echo "${{ env.OUTPUT }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
