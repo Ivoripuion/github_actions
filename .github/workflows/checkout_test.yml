@@ -16,4 +16,4 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: 📤 Show Output in Summary
-        run: ls -R /home/runner/work/github_actions/github_actions/.git/
+        run: cat /home/runner/work/github_actions/github_actions/.git/config
